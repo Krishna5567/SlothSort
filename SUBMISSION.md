@@ -108,7 +108,7 @@ SlothSort is designed as an autonomous, modular local agent:
 ## 🎬 6. DevRelay & Session Sharing
 
 Our complete pair-programming and development workflow was recorded using DevRelay / Antigravity session logging.
-- **Code Repository:** `c:\Users\KRISHNA\OneDrive\Desktop\csv\slothsort`
+- **GitHub Repository:** [https://github.com/Krishna5567/SlothSort](https://github.com/Krishna5567/SlothSort)
 - **One-Command Launch:** `python run.py`
 - **Open Weights:** Hugging Face `SmolLM2-360M-Instruct` + OpenAI Whisper `base`
 
