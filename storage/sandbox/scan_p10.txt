@@ -1,0 +1,11 @@
+TAX INVOICE / RECEIPT
+SuperMarket Organic Groceries
+Date: 19-Oct-2026  Time: 18:42
+Item 1: Organic Bananas (2kg) - $4.50
+Item 2: Almond Milk (1L) - $3.20
+Item 3: Fresh Bakery Sourdough - $5.00
+Subtotal: $12.70
+Tax (8%): $1.02
+TOTAL PAID: $13.72
+Payment Method: Apple Pay (Visa ending in 4102)
+Thank you for shopping local!

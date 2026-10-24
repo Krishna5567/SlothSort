@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlothSort 🦥 | Slow & Steady Autonomous Local AI Organizer</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Consolas&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-icon">🦥</div>
+                <div class="brand-text">
+                    <h1>SlothSort <span class="brand-badge">Sloth Day Edition</span></h1>
+                    <p>Slow and steady wins the race. 100% Offline Open-Source AI.</p>
+                </div>
+            </div>
+            <div class="system-badges">
+                <div class="pill-badge active" id="badge-device">
+                    <span class="dot"></span>
+                    <span id="device-text">NVIDIA RTX 3050 CUDA</span>
+                </div>
+                <div class="pill-badge" id="badge-privacy">
+                    🔒 Zero Cloud / 100% Local
+                </div>
+                <div class="pill-badge" id="badge-cost">
+                    💰 $0.00 Running Cost
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-wrapper">
+
+        <!-- Hero Control Box -->
+        <section class="hero-card">
+            <div class="path-input-row">
+                <div class="input-group">
+                    <span class="input-icon">📂</span>
+                    <input type="text" id="target-dir-input" class="path-input" placeholder="Enter messy folder path or leave empty for Sandbox..." value="">
+                </div>
+                <button class="btn btn-secondary" id="btn-populate" title="Create sample messy files (text, code, voice memos)">
+                    🎲 Populate Sample Clutter
+                </button>
+                <button class="btn btn-secondary" id="btn-scan">
+                    🔍 Scan / Preview
+                </button>
+                <button class="btn btn-primary" id="btn-process">
+                    💤 Hibernate & Sort (Lazy Mode)
+                </button>
+                <button class="btn btn-danger" id="btn-undo" title="Safely restore files to original names and locations">
+                    ↩️ Undo Last Run
+                </button>
+            </div>
+
+            <div class="options-row">
+                <label class="toggle-label">
+                    <input type="checkbox" id="toggle-llm" checked>
+                    <span>Open-Weight LLM (SmolLM2-360M) for Renaming & Digest</span>
+                </label>
+                <label class="toggle-label">
+                    <input type="checkbox" id="toggle-tts" checked>
+                    <span>Offline Audio Digest (pyttsx3 Speech)</span>
+                </label>
+                <label class="toggle-label">
+                    <input type="checkbox" id="toggle-sloth-pace">
+                    <span>🦥 Sloth Pace (Relaxed Step-by-Step)</span>
+                </label>
+            </div>
+
+            <!-- Dynamic Sloth Mascot Bar -->
+            <div class="sloth-status-bar">
+                <div class="sloth-avatar" id="sloth-mascot">🦥</div>
+                <div class="sloth-status-text">
+                    <div class="sloth-status-title" id="sloth-title">Sloth Status: Resting peacefully on the canopy branch</div>
+                    <div class="sloth-status-desc" id="sloth-desc">Drop your messy files or click "Populate Sample Clutter" to see local open-weight AI do the housekeeping.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs-nav">
+            <button class="tab-btn active" data-tab="tab-organizer">
+                🗂️ File Organizer <span id="file-count-badge">(0)</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-digest">
+                ☕ Morning Digest
+            </button>
+            <button class="tab-btn" data-tab="tab-memos">
+                🎙️ Voice Memos & Whisper
+            </button>
+            <button class="tab-btn" data-tab="tab-manifesto">
+                🌱 Why Open Innovation Matters
+            </button>
+            <button class="tab-btn" data-tab="tab-history">
+                📜 Rollback History
+            </button>
+        </nav>
+
+        <!-- Tab 1: File Organizer Table -->
+        <section id="tab-organizer" class="tab-content active">
+            <div class="content-card">
+                <div class="table-responsive">
+                    <table id="files-table">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Original File</th>
+                                <th>Smart Renamed Name</th>
+                                <th>Category Folder</th>
+                                <th>AI Summary / Snippet</th>
+                                <th>Size</th>
+                            </tr>
+                        </thead>
+                        <tbody id="files-tbody">
+                            <tr>
+                                <td colspan="6">
+                                    <div class="empty-state">
+                                        <div class="empty-icon">🍃</div>
+                                        <h3>No files scanned yet</h3>
+                                        <p>Click <strong>"Populate Sample Clutter"</strong> to load safe test files, or click <strong>"Scan / Preview"</strong>.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 2: Morning Digest -->
+        <section id="tab-digest" class="tab-content">
+            <div class="digest-container">
+                <div class="digest-main">
+                    <div class="digest-header">
+                        <div class="digest-greeting">
+                            <h2 id="digest-greeting-text">Good Morning, Master Sloth 🦥</h2>
+                            <p id="digest-date-text">Daily Autonomous Briefing</p>
+                        </div>
+                        <div class="brand-badge" id="digest-badge">100% Offline</div>
+                    </div>
+
+                    <!-- Audio Player for Voice Briefing -->
+                    <div class="digest-audio-player" id="digest-audio-box" style="display: none;">
+                        <span style="font-size: 1.5rem;">🎧</span>
+                        <div style="flex: 1;">
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Offline Audio Briefing (pyttsx3)</div>
+                            <audio id="digest-audio" controls></audio>
+                        </div>
+                    </div>
+
+                    <div class="digest-body" id="digest-body-text">
+                        You haven't run an organizing cycle yet. Once you click "Hibernate & Sort", you'll receive a relaxing, sloth-themed morning recap right here!
+                    </div>
+
+                    <div style="border-top: 1px solid #1e293b; padding-top: 1rem; color: var(--text-muted); font-size: 0.85rem;">
+                        Generated by <strong>HuggingFaceTB/SmolLM2-360M-Instruct</strong> running locally on your hardware.
+                    </div>
+                </div>
+
+                <div class="digest-stats-sidebar">
+                    <div class="stat-box">
+                        <div class="stat-label">Files Organized</div>
+                        <div class="stat-val" id="stat-files">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Voice Memos Transcribed</div>
+                        <div class="stat-val" id="stat-memos">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Human Energy Conserved</div>
+                        <div class="stat-val" id="stat-energy">100%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Sloth Zen Rating</div>
+                        <div class="stat-val" id="stat-zen">5 / 5 🍃</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3: Voice Memos -->
+        <section id="tab-memos" class="tab-content">
+            <div class="content-card">
+                <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+                    🎙️ Offline Audio Voice Memos (Whisper Transcriptions)
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
+                    Voice memos are transcribed using local <code>openai-whisper</code> on your GPU. Private audio recordings never touch any remote server. Companion <code>.txt</code> transcripts are automatically saved beside each audio file.
+                </p>
+                <div id="voice-memos-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">🎙️</div>
+                        <h3>No voice memos processed yet</h3>
+                        <p>Populate the sandbox to test with an offline audio recording!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 4: Open Innovation Manifesto -->
+        <section id="tab-manifesto" class="tab-content">
+            <div class="content-card">
+                <h2 style="margin-bottom: 0.5rem;">Why Open Innovation Matters for SlothSort</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem;">
+                    The core promise of the "Slow and Steady" challenge is that <em>the open pieces must be what make your project work</em>. Here is how SlothSort leverages open-source AI to achieve what closed proprietary models cannot:
+                </p>
+
+                <div class="table-responsive">
+                    <table class="manifesto-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Challenge Dimension</th>
+                                <th style="width: 40%; color: var(--accent-emerald);">🌿 Open-Source AI (SlothSort)</th>
+                                <th style="width: 35%; color: var(--text-muted);">☁️ Proprietary Cloud APIs</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manifesto-tbody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 2rem; background: #0d1527; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid #1e293b;">
+                    <h3 style="color: var(--sloth-gold); margin-bottom: 8px;">🦥 The Sloth Philosophy: Zero Maintenance, Infinite Longevity</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
+                        Closed APIs deprecate models every 6 months, enforce token rate limits, require billing credit cards, and disconnect if your Wi-Fi drops. SlothSort runs open weights (SmolLM2-360M + Whisper + pyttsx3). Once installed, it works forever—on an airplane, during a power outage, or at 3 AM with zero cost and complete peace of mind.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 5: History -->
+        <section id="tab-history" class="tab-content">
+            <div class="content-card">
+                <h3 style="margin-bottom: 1rem;">📜 Organization & Rollback History</h3>
+                <div id="history-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">⏳</div>
+                        <h3>No past transactions found</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>Built for the <strong>"Slow and Steady" Open-Source AI Challenge</strong> | International Sloth Day Edition 🦥 | Powered by <strong>SmolLM2</strong>, <strong>Whisper</strong> & <strong>FastAPI</strong></p>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

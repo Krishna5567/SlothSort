@@ -1,0 +1,5 @@
+metric,value,unit
+vram_usage,1.8,GB
+offline_privacy_score,100,percent
+api_bill_usd,0,dollars
+energy_conserved,99.9,percent
