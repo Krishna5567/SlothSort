@@ -26,7 +26,7 @@ from models.llm_engine import generate_morning_digest_text
 from models.tts_engine import generate_speech_file
 from models.sandbox_generator import populate_sandbox, SANDBOX_DIR
 
-app = FastAPI(title="SlothSort API", description="Autonomous Local Desktop Organizer with Open-Source AI")
+app = FastAPI(title="SlothSort API", description="Autonomous Local Desktop Organizer with Open-Source AI", redirect_slashes=False)
 
 IS_VERCEL = bool(os.environ.get("VERCEL"))
 STATIC_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "static"))
