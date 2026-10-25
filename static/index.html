@@ -8,6 +8,585 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Consolas&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-dark: #0a0f1d;
+    --card-bg: #131d33;
+    --card-border: #1e293b;
+    --accent-emerald: #10b981;
+    --accent-glow: rgba(16, 185, 129, 0.25);
+    --sloth-gold: #f59e0b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --danger: #ef4444;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --radius-sm: 6px;
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* Header */
+header {
+    background: rgba(19, 29, 51, 0.7);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--card-border);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.brand-icon {
+    font-size: 2.2rem;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    box-shadow: 0 0 20px var(--accent-glow);
+    animation: gentleBreathe 4s ease-in-out infinite alternate;
+}
+
+@keyframes gentleBreathe {
+    0% { transform: scale(1); filter: brightness(1); }
+    100% { transform: scale(1.05); filter: brightness(1.2); }
+}
+
+.brand-text h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brand-badge {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--sloth-gold);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    font-weight: 600;
+}
+
+.brand-text p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.system-badges {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.pill-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: var(--text-secondary);
+}
+
+.pill-badge.active {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #34d399;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+}
+
+/* Layout */
+.main-wrapper {
+    max-width: 1300px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Hero Control Panel */
+.hero-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #f59e0b, #3b82f6);
+}
+
+.path-input-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.input-group {
+    flex: 1;
+    min-width: 280px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+.path-input {
+    width: 100%;
+    padding: 12px 14px 12px 42px;
+    background: #0d1527;
+    border: 1px solid #23314d;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-family: 'Consolas', monospace;
+    outline: none;
+    transition: var(--transition);
+}
+
+.path-input:focus {
+    border-color: var(--accent-emerald);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    user-select: none;
+    text-decoration: none;
+}
+
+.btn-secondary {
+    background: #1e293b;
+    color: var(--text-primary);
+    border: 1px solid #334155;
+}
+
+.btn-secondary:hover {
+    background: #27354a;
+    border-color: #475569;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #34d399, #10b981);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-danger {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+.btn-danger:hover {
+    background: rgba(239, 68, 68, 0.25);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Sloth Mascot Status Bar */
+.sloth-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #0d1527;
+    border: 1px solid #1a243a;
+    border-radius: var(--radius-md);
+    padding: 12px 18px;
+}
+
+.sloth-avatar {
+    font-size: 2rem;
+    animation: gentleFloat 3s ease-in-out infinite;
+}
+
+@keyframes gentleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+.sloth-status-text {
+    flex: 1;
+}
+
+.sloth-status-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--sloth-gold);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sloth-status-desc {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+/* Toggles */
+.options-row {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    padding-top: 4px;
+    flex-wrap: wrap;
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.toggle-label input[type="checkbox"] {
+    accent-color: var(--accent-emerald);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Tabs */
+.tabs-nav {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 4px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+    color: #34d399;
+    font-weight: 600;
+    border-bottom: 2px solid var(--accent-emerald);
+    background: rgba(16, 185, 129, 0.08);
+}
+
+/* Content Area */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Table Card */
+.content-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    text-align: left;
+}
+
+th {
+    padding: 12px 16px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    border-bottom: 1px solid var(--card-border);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
+}
+
+tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-voice { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+.badge-finance { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+.badge-code { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+.badge-doc { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+.badge-media { background: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.3); }
+.badge-data { background: rgba(20, 184, 166, 0.15); color: #2dd4bf; border: 1px solid rgba(20, 184, 166, 0.3); }
+
+/* Morning Digest Card */
+.digest-container {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .digest-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.digest-main {
+    background: #0d1527;
+    border: 1px solid #1e293b;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    position: relative;
+}
+
+.digest-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #1e293b;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.digest-greeting h2 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.digest-greeting p {
+    color: var(--sloth-gold);
+    font-size: 0.9rem;
+}
+
+.digest-audio-player {
+    background: #131d33;
+    border: 1px solid #23314d;
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+audio {
+    width: 100%;
+    outline: none;
+    border-radius: 20px;
+}
+
+.digest-body {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #cbd5e1;
+    margin-bottom: 1.5rem;
+}
+
+.digest-stats-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.stat-box {
+    background: #0d1527;
+    border: 1px solid #1e293b;
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+}
+
+.stat-label {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.stat-val {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent-emerald);
+}
+
+/* Comparison Table */
+.manifesto-table {
+    margin-top: 1rem;
+}
+
+.manifesto-table th {
+    background: #0d1527;
+}
+
+.open-check {
+    color: var(--accent-emerald);
+    font-weight: 600;
+}
+
+.closed-x {
+    color: var(--text-muted);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+}
+
+/* Footer */
+footer {
+    border-top: 1px solid var(--card-border);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: auto;
+}
+
+footer a {
+    color: var(--accent-emerald);
+    text-decoration: none;
+}
+
+</style>
 </head>
 <body>
 
@@ -261,5 +840,394 @@
     </footer>
 
     <script src="/static/js/app.js"></script>
+<script>
+// SlothSort Frontend Controller
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Elements
+    const targetDirInput = document.getElementById('target-dir-input');
+    const btnPopulate = document.getElementById('btn-populate');
+    const btnScan = document.getElementById('btn-scan');
+    const btnProcess = document.getElementById('btn-process');
+    const btnUndo = document.getElementById('btn-undo');
+    const toggleLlm = document.getElementById('toggle-llm');
+    const toggleTts = document.getElementById('toggle-tts');
+    const toggleSlothPace = document.getElementById('toggle-sloth-pace');
+
+    const slothMascot = document.getElementById('sloth-mascot');
+    const slothTitle = document.getElementById('sloth-title');
+    const slothDesc = document.getElementById('sloth-desc');
+    const fileCountBadge = document.getElementById('file-count-badge');
+
+    const filesTbody = document.getElementById('files-tbody');
+    const manifestoTbody = document.getElementById('manifesto-tbody');
+    const voiceMemosList = document.getElementById('voice-memos-list');
+    const historyList = document.getElementById('history-list');
+
+    // Tab buttons
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    // Tab Navigation
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            const target = btn.dataset.tab;
+            const content = document.getElementById(target);
+            if (content) content.classList.add('active');
+
+            if (target === 'tab-history') {
+                loadHistory();
+            }
+        });
+    });
+
+    // Initialize System Status
+    async function loadStatus() {
+        try {
+            const res = await fetch('/api/status');
+            const data = await res.json();
+            if (data.cuda_available) {
+                document.getElementById('device-text').textContent = `${data.device} (${data.vram_gb} GB VRAM)`;
+            } else if (data.platform === "Vercel Serverless") {
+                document.getElementById('device-text').textContent = "Vercel Cloud Showcase";
+                const privacyBadge = document.getElementById('badge-privacy');
+                if (privacyBadge) privacyBadge.textContent = "☁️ Cloud Interactive Demo";
+            } else {
+                document.getElementById('device-text').textContent = data.device || "Local CPU Inference";
+            }
+        } catch (err) {
+            console.error("Failed to load status:", err);
+        }
+    }
+
+    // Load Open Innovation Manifesto
+    async function loadManifesto() {
+        try {
+            const res = await fetch('/api/open-innovation-stats');
+            const data = await res.json();
+            manifestoTbody.innerHTML = '';
+            data.comparison.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${row.feature}</strong></td>
+                    <td class="open-check">✓ ${row.open_source}</td>
+                    <td class="closed-x">✗ ${row.closed_api}</td>
+                `;
+                manifestoTbody.appendChild(tr);
+            });
+        } catch (err) {
+            console.error("Failed to load manifesto:", err);
+        }
+    }
+
+    // Set Sloth Mascot State
+    function setSlothState(state, messageTitle, messageDesc) {
+        if (state === 'sleeping') {
+            slothMascot.textContent = '💤';
+            slothTitle.textContent = messageTitle || "Sloth Status: Deep in slow-and-steady processing...";
+            slothTitle.style.color = '#38bdf8';
+        } else if (state === 'happy') {
+            slothMascot.textContent = '🦥';
+            slothTitle.textContent = messageTitle || "Sloth Status: All done! 100% Zen restored.";
+            slothTitle.style.color = '#10b981';
+        } else {
+            slothMascot.textContent = '🦥';
+            slothTitle.textContent = messageTitle || "Sloth Status: Resting peacefully on the canopy branch";
+            slothTitle.style.color = '#f59e0b';
+        }
+        slothDesc.textContent = messageDesc || "Everything is running offline with open-source AI.";
+    }
+
+    // Populate Sample Clutter
+    btnPopulate.addEventListener('click', async () => {
+        btnPopulate.disabled = true;
+        setSlothState('sleeping', 'Creating messy sandbox clutter...', 'Synthesizing voice memos, mock invoices, and messy scripts.');
+        try {
+            const res = await fetch('/api/sandbox/populate', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                targetDirInput.value = data.sandbox_path;
+                setSlothState('happy', 'Sample clutter generated!', `${data.file_count} sample messy files are ready in sandbox.`);
+                await scanDirectory(data.sandbox_path);
+            }
+        } catch (err) {
+            alert("Error populating sandbox: " + err);
+        } finally {
+            btnPopulate.disabled = false;
+        }
+    });
+
+    // Scan Directory
+    async function scanDirectory(path) {
+        const dir = path !== undefined ? path : targetDirInput.value.trim();
+        filesTbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem;">Scanning directory...</td></tr>`;
+
+        try {
+            const res = await fetch('/api/scan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ directory: dir || null })
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.detail || 'Scan failed');
+            }
+
+            const data = await res.json();
+            targetDirInput.value = data.target_dir;
+            fileCountBadge.textContent = `(${data.file_count})`;
+
+            if (data.files.length === 0) {
+                filesTbody.innerHTML = `
+                    <tr><td colspan="6">
+                        <div class="empty-state">
+                            <div class="empty-icon">🍃</div>
+                            <h3>Directory is squeaky clean!</h3>
+                            <p>No messy files found. Click "Populate Sample Clutter" to try the demo.</p>
+                        </div>
+                    </td></tr>
+                `;
+                return;
+            }
+
+            filesTbody.innerHTML = '';
+            data.files.forEach(f => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><span style="color: #94a3b8;">⏳ Pending</span></td>
+                    <td><strong>${f.name}</strong></td>
+                    <td style="color: var(--text-muted); font-style: italic;">Will be generated</td>
+                    <td><span class="badge" style="background: #1e293b; color: #94a3b8;">Uncategorized</span></td>
+                    <td style="color: var(--text-secondary); font-size: 0.8rem;">Ready for local analysis</td>
+                    <td>${formatBytes(f.size_bytes)}</td>
+                `;
+                filesTbody.appendChild(tr);
+            });
+
+            setSlothState('chill', `Found ${data.file_count} files waiting for lazy sorting`, 'Click "Hibernate & Sort" to let open-source AI do all the work.');
+
+        } catch (err) {
+            filesTbody.innerHTML = `<tr><td colspan="6" style="color: #ef4444; padding: 2rem; text-align: center;">Error: ${err.message}</td></tr>`;
+        }
+    }
+
+    btnScan.addEventListener('click', () => scanDirectory());
+
+    // Process / Hibernate & Sort
+    btnProcess.addEventListener('click', async () => {
+        const dir = targetDirInput.value.trim();
+        btnProcess.disabled = true;
+        setSlothState('sleeping', 'Zzz... Sloth is steadily sorting and transcribing...', 'Running Whisper on GPU for voice memos and SmolLM2 for intelligent categorization.');
+
+        try {
+            const res = await fetch('/api/process', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    directory: dir || null,
+                    enable_llm: toggleLlm.checked,
+                    enable_tts: toggleTts.checked,
+                    sloth_mode: toggleSlothPace.checked
+                })
+            });
+
+            const data = await res.json();
+            if (!data.success) {
+                alert(data.message || "Failed to process files.");
+                return;
+            }
+
+            // Render Results in Table
+            filesTbody.innerHTML = '';
+            fileCountBadge.textContent = `(${data.items.length})`;
+
+            data.items.forEach(item => {
+                const tr = document.createElement('tr');
+                const badgeClass = getBadgeClass(item.category);
+
+                tr.innerHTML = `
+                    <td><span style="color: #10b981; font-weight: bold;">✓ Sorted</span></td>
+                    <td style="color: #94a3b8; text-decoration: line-through;">${item.original_name}</td>
+                    <td><strong style="color: #38bdf8;">${item.new_name}</strong></td>
+                    <td><span class="badge ${badgeClass}">${item.category}</span></td>
+                    <td style="max-width: 320px; font-size: 0.82rem; color: #cbd5e1;">${item.summary || item.snippet}</td>
+                    <td>${formatBytes(item.size_bytes)}</td>
+                `;
+                filesTbody.appendChild(tr);
+            });
+
+            // Update Morning Digest Tab
+            document.getElementById('digest-greeting-text').textContent = data.digest.greeting;
+            document.getElementById('digest-body-text').textContent = data.digest.briefing;
+            document.getElementById('stat-files').textContent = data.total_files;
+            document.getElementById('stat-memos').textContent = data.voice_memos;
+            document.getElementById('stat-energy').textContent = data.digest.energy_saved_pct;
+            document.getElementById('stat-zen').textContent = data.digest.sloth_zen_rating;
+
+            // Audio Player & Speech synthesis
+            const audioBox = document.getElementById('digest-audio-box');
+            const audioElem = document.getElementById('digest-audio');
+            audioBox.style.display = 'flex';
+            if (data.audio_url) {
+                audioElem.src = data.audio_url;
+                audioElem.style.display = 'block';
+            } else {
+                audioElem.style.display = 'none';
+            }
+
+            // Update Voice Memos Tab
+            renderVoiceMemos(data.items);
+
+            setSlothState('happy', 'Sorting complete! 🦥 100% human energy conserved.', 'Files organized into neat folders. Check out your Morning Digest tab!');
+
+        } catch (err) {
+            alert("Processing error: " + err);
+        } finally {
+            btnProcess.disabled = false;
+        }
+    });
+
+    // Render Voice Memos
+    function renderVoiceMemos(items) {
+        const audioItems = items.filter(it => it.is_audio);
+        if (audioItems.length === 0) {
+            voiceMemosList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🎙️</div>
+                    <h3>No audio voice memos were found in this batch.</h3>
+                </div>
+            `;
+            return;
+        }
+
+        voiceMemosList.innerHTML = '';
+        audioItems.forEach(item => {
+            const card = document.createElement('div');
+            card.style.cssText = 'background: #0d1527; border: 1px solid #1e293b; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;';
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <div>
+                        <strong style="color: #c084fc;">🎙️ ${item.new_name}</strong>
+                        <span style="font-size: 0.8rem; color: #94a3b8; margin-left: 10px;">(Original: ${item.original_name})</span>
+                    </div>
+                    <span class="badge badge-voice">Whisper base (CUDA)</span>
+                </div>
+                <div style="background: #131d33; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; color: #f1f5f9; line-height: 1.5; margin-bottom: 10px;">
+                    "${item.transcript || 'No transcript generated'}"
+                </div>
+                <div style="font-size: 0.8rem; color: #10b981;">
+                    ✓ Companion transcript file saved as <code>${item.new_name.replace(/\.[^/.]+$/, "")}_transcript.txt</code>
+                </div>
+            `;
+            voiceMemosList.appendChild(card);
+        });
+    }
+
+    // 1-Click Undo
+    btnUndo.addEventListener('click', async () => {
+        if (!confirm("Are you sure you want to undo the last organizing run and move files back?")) {
+            return;
+        }
+        btnUndo.disabled = true;
+        try {
+            const res = await fetch('/api/undo', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                alert(`Undo successful! Restored ${data.restored_count} files back to original locations.`);
+                await scanDirectory();
+                setSlothState('chill', 'Rollback completed', 'All files have been restored safely.');
+            } else {
+                alert("Undo notice: " + (data.error || "No run to undo."));
+            }
+        } catch (err) {
+            alert("Undo failed: " + err);
+        } finally {
+            btnUndo.disabled = false;
+        }
+    });
+
+    // Load History
+    async function loadHistory() {
+        try {
+            const res = await fetch('/api/history');
+            const data = await res.json();
+            if (data.length === 0) {
+                historyList.innerHTML = `<div class="empty-state"><div class="empty-icon">⏳</div><h3>No past transactions found</h3></div>`;
+                return;
+            }
+
+            historyList.innerHTML = '';
+            data.forEach(item => {
+                const dateStr = new Date(item.timestamp * 1000).toLocaleString();
+                const card = document.createElement('div');
+                card.style.cssText = 'background: #0d1527; border: 1px solid #1e293b; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;';
+                card.innerHTML = `
+                    <div>
+                        <strong style="color: var(--text-primary);">${item.run_id}</strong>
+                        <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">Date: ${dateStr} | Folder: <code>${item.target_dir}</code></div>
+                    </div>
+                    <div>
+                        <span class="badge ${item.is_undone ? 'badge-media' : 'badge-finance'}">
+                            ${item.is_undone ? 'Undone / Rolled Back' : `${item.file_count} Files Sorted`}
+                        </span>
+                    </div>
+                `;
+                historyList.appendChild(card);
+            });
+        } catch (err) {
+            console.error("Failed to load history:", err);
+        }
+    }
+
+    // Helpers
+    function formatBytes(bytes, decimals = 2) {
+        if (!+bytes) return '0 B';
+        const k = 1024;
+        const dm = decimals < 0 ? 0 : decimals;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+    }
+
+    function getBadgeClass(cat) {
+        if (!cat) return '';
+        const c = cat.toLowerCase();
+        if (c.includes('voice') || c.includes('audio')) return 'badge-voice';
+        if (c.includes('finance') || c.includes('receipt')) return 'badge-finance';
+        if (c.includes('code') || c.includes('script')) return 'badge-code';
+        if (c.includes('doc') || c.includes('note')) return 'badge-doc';
+        if (c.includes('media') || c.includes('graphic')) return 'badge-media';
+        if (c.includes('data') || c.includes('sheet')) return 'badge-data';
+        return '';
+    }
+
+    // Browser Speech Synthesis for Morning Digest
+    const btnSpeakBrowser = document.getElementById('btn-speak-browser');
+    if (btnSpeakBrowser) {
+        btnSpeakBrowser.addEventListener('click', () => {
+            const greeting = document.getElementById('digest-greeting-text').textContent;
+            const text = document.getElementById('digest-body-text').textContent;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(`${greeting}. ${text}`);
+                utterance.rate = 0.9;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Speech Synthesis is not supported in this browser.");
+            }
+        });
+    }
+
+    // Run initial loads
+    loadStatus();
+    loadManifesto();
+});
+
+</script>
 </body>
 </html>

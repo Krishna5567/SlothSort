@@ -229,6 +229,25 @@ def api_open_innovation_stats():
         ]
     }
 
+# Explicit static file endpoints to guarantee delivery on all hosting environments
+@app.get("/static/css/styles.css")
+def serve_css():
+    css_path = os.path.join(STATIC_DIR, "css", "styles.css")
+    if not os.path.exists(css_path):
+        css_path = os.path.join(os.path.dirname(__file__), "public", "static", "css", "styles.css")
+    if os.path.exists(css_path):
+        return FileResponse(css_path, media_type="text/css")
+    raise HTTPException(status_code=404, detail="CSS not found")
+
+@app.get("/static/js/app.js")
+def serve_js():
+    js_path = os.path.join(STATIC_DIR, "js", "app.js")
+    if not os.path.exists(js_path):
+        js_path = os.path.join(os.path.dirname(__file__), "public", "static", "js", "app.js")
+    if os.path.exists(js_path):
+        return FileResponse(js_path, media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="JS not found")
+
 # Mount static frontend
 if os.path.exists(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -236,6 +255,8 @@ if os.path.exists(STATIC_DIR):
 @app.get("/")
 def serve_index():
     index_file = os.path.join(STATIC_DIR, "index.html")
+    if not os.path.exists(index_file):
+        index_file = os.path.join(os.path.dirname(__file__), "public", "index.html")
     if os.path.exists(index_file):
-        return FileResponse(index_file)
+        return FileResponse(index_file, media_type="text/html")
     return {"message": "SlothSort API is live."}
