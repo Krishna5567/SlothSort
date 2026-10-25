@@ -7,8 +7,13 @@ import os
 import shutil
 import json
 import time
+import tempfile
 
-STORAGE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage"))
+if os.environ.get("VERCEL"):
+    STORAGE_DIR = os.path.join(tempfile.gettempdir(), "slothsort_storage")
+else:
+    STORAGE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage"))
+
 MANIFEST_DIR = os.path.join(STORAGE_DIR, "manifests")
 
 def ensure_manifest_dir():
@@ -93,7 +98,7 @@ def undo_run(run_id: str = None) -> dict:
     If run_id is None, undos the most recent run.
     """
     ensure_manifest_dir()
-    manifests = sorted([f for f in os.listdir(MANIFEST_DIR) if f.endswith(".json")], reverse=True)
+    manifests = sorted([f for f in os.listdir(MANIFEST_DIR) if f.endswith(".json") and not f.endswith(".undone.json")], reverse=True)
     if not manifests:
         return {"success": False, "error": "No organizing history found to undo."}
         
@@ -116,14 +121,12 @@ def undo_run(run_id: str = None) -> dict:
         orig = op["original_path"]
         transcript_path = op.get("transcript_path")
         
-        # Remove created transcript companion if it exists
         if transcript_path and os.path.exists(transcript_path):
             try:
                 os.remove(transcript_path)
-            except Exception as e:
+            except Exception:
                 pass
                 
-        # Move back
         if os.path.exists(dest):
             try:
                 os.makedirs(os.path.dirname(orig), exist_ok=True)
@@ -132,7 +135,6 @@ def undo_run(run_id: str = None) -> dict:
             except Exception as e:
                 errors.append(f"Could not restore {dest} -> {orig}: {e}")
                 
-    # Delete or rename manifest to indicate undone
     undone_path = selected_manifest_file.replace(".json", ".undone.json")
     try:
         os.rename(selected_manifest_file, undone_path)

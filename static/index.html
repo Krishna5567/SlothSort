@@ -148,12 +148,15 @@
                     </div>
 
                     <!-- Audio Player for Voice Briefing -->
-                    <div class="digest-audio-player" id="digest-audio-box" style="display: none;">
+                    <div class="digest-audio-player" id="digest-audio-box" style="display: none; flex-wrap: wrap; gap: 12px;">
                         <span style="font-size: 1.5rem;">🎧</span>
-                        <div style="flex: 1;">
-                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Offline Audio Briefing (pyttsx3)</div>
-                            <audio id="digest-audio" controls></audio>
+                        <div style="flex: 1; min-width: 200px;">
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Morning Briefing Audio</div>
+                            <audio id="digest-audio" controls style="width: 100%;"></audio>
                         </div>
+                        <button class="btn btn-secondary" id="btn-speak-browser" style="padding: 8px 14px; font-size: 0.8rem;" title="Speak briefing aloud using browser voice">
+                            🗣️ Read Aloud
+                        </button>
                     </div>
 
                     <div class="digest-body" id="digest-body-text">

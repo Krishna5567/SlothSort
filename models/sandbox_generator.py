@@ -1,13 +1,19 @@
 """
 Sandbox Generator for SlothSort
-Populates sample messy files (text, code, data, and offline audio voice memos)
+Populates sample messy files (text, code, data, and audio voice memos)
 so users and judges can test the app with 1 click without touching real folders.
 """
 
 import os
-from .tts_engine import generate_speech_file
+import wave
+import struct
+import math
+import tempfile
 
-SANDBOX_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage", "sandbox"))
+if os.environ.get("VERCEL"):
+    SANDBOX_DIR = os.path.join(tempfile.gettempdir(), "slothsort_storage", "sandbox")
+else:
+    SANDBOX_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "storage", "sandbox"))
 
 SAMPLE_FILES = [
     {
@@ -77,9 +83,10 @@ def populate_sandbox():
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(item["content"])
             
-    # 2. Create an actual audio voice memo using pyttsx3 offline synthesis
+    # 2. Create sample audio voice memo
     audio_path = os.path.join(SANDBOX_DIR, "voice_memo_001.wav")
     if not os.path.exists(audio_path):
+        generated = False
         try:
             import pyttsx3
             engine = pyttsx3.init()
@@ -90,7 +97,23 @@ def populate_sandbox():
                 audio_path
             )
             engine.runAndWait()
-        except Exception as e:
-            print(f"[Sandbox] Could not generate sample audio: {e}")
+            generated = True
+        except Exception:
+            pass
+            
+        if not generated:
+            # Fallback audio generation using standard library wave
+            sample_rate = 16000
+            duration = 2.0
+            n_samples = int(sample_rate * duration)
+            with wave.open(audio_path, 'w') as wav_file:
+                wav_file.setnchannels(1)
+                wav_file.setsampwidth(2)
+                wav_file.setframerate(sample_rate)
+                for i in range(n_samples):
+                    t = float(i) / sample_rate
+                    value = 0.25 * math.sin(2.0 * math.pi * 440.0 * t)
+                    sample = int(value * 32767.0)
+                    wav_file.writeframes(struct.pack('<h', sample))
             
     return SANDBOX_DIR

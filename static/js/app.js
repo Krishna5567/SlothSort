@@ -48,8 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             if (data.cuda_available) {
                 document.getElementById('device-text').textContent = `${data.device} (${data.vram_gb} GB VRAM)`;
+            } else if (data.platform === "Vercel Serverless") {
+                document.getElementById('device-text').textContent = "Vercel Cloud Showcase";
+                const privacyBadge = document.getElementById('badge-privacy');
+                if (privacyBadge) privacyBadge.textContent = "☁️ Cloud Interactive Demo";
             } else {
-                document.getElementById('device-text').textContent = "Local CPU Inference";
+                document.getElementById('device-text').textContent = data.device || "Local CPU Inference";
             }
         } catch (err) {
             console.error("Failed to load status:", err);
@@ -221,14 +225,15 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('stat-energy').textContent = data.digest.energy_saved_pct;
             document.getElementById('stat-zen').textContent = data.digest.sloth_zen_rating;
 
-            // Audio Player
+            // Audio Player & Speech synthesis
             const audioBox = document.getElementById('digest-audio-box');
             const audioElem = document.getElementById('digest-audio');
+            audioBox.style.display = 'flex';
             if (data.audio_url) {
                 audioElem.src = data.audio_url;
-                audioBox.style.display = 'flex';
+                audioElem.style.display = 'block';
             } else {
-                audioBox.style.display = 'none';
+                audioElem.style.display = 'none';
             }
 
             // Update Voice Memos Tab
@@ -355,6 +360,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (c.includes('media') || c.includes('graphic')) return 'badge-media';
         if (c.includes('data') || c.includes('sheet')) return 'badge-data';
         return '';
+    }
+
+    // Browser Speech Synthesis for Morning Digest
+    const btnSpeakBrowser = document.getElementById('btn-speak-browser');
+    if (btnSpeakBrowser) {
+        btnSpeakBrowser.addEventListener('click', () => {
+            const greeting = document.getElementById('digest-greeting-text').textContent;
+            const text = document.getElementById('digest-body-text').textContent;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(`${greeting}. ${text}`);
+                utterance.rate = 0.9;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Speech Synthesis is not supported in this browser.");
+            }
+        });
     }
 
     // Run initial loads

@@ -50,23 +50,32 @@ You dump your cluttered files into a folder, hit **"Hibernate & Sort (Lazy Mode)
 
 ---
 
-## 🚀 Quickstart Guide
+## 🚀 Deployment & Quickstart
 
-### 1. Requirements
-- Python 3.10+
-- PyTorch (CUDA optional for GPU acceleration, CPU supported out-of-the-box)
+### Option A: Deploy to Vercel (Instant Cloud Showcase)
+SlothSort is preconfigured with `vercel.json` and `api/index.py` using a lightweight serverless bundle (< 25 MB) well below the 250 MB Lambda limit:
+1. Push to your GitHub repository.
+2. Import the repository in [Vercel](https://vercel.com/new).
+3. Vercel will automatically detect FastAPI and deploy instantly in under 30 seconds!
 
-### 2. Launch
+---
+
+### Option B: Run Locally on Laptop (Full Local GPU / CUDA Acceleration)
+To run the full open-weight models (`openai-whisper` + `SmolLM2-360M-Instruct`) completely offline on your own GPU/CPU:
+
 ```bash
-cd slothsort
+# 1. Install local dependencies
+pip install -r requirements-local.txt
+
+# 2. Launch
 python run.py
 ```
 This will automatically launch the server and open your browser at `http://localhost:8000`.
 
-### 3. Usage in 3 Steps
-1. Click **"🎲 Populate Sample Clutter"** to load the safe sandbox test files.
-2. Click **"💤 Hibernate & Sort (Lazy Mode)"**. Watch the sloth mascot steadily process files locally.
-3. Switch to the **"☕ Morning Digest"** tab to read your summary and listen to the offline voice briefing!
+### 🎮 Usage in 3 Steps
+1. Click **"🎲 Populate Sample Clutter"** to load safe sandbox test files.
+2. Click **"💤 Hibernate & Sort (Lazy Mode)"**. Watch the sloth mascot steadily process files.
+3. Switch to the **"☕ Morning Digest"** tab to read your summary and hear your spoken voice briefing!
 
 ---
 

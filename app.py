@@ -1,16 +1,24 @@
 """
 SlothSort FastAPI Application
 The 100% Offline, Open-Source AI Desktop & Voice Memo Organizer
+Supports both local native GPU/CPU execution and lightweight Vercel cloud deployment.
 """
 
 import os
 import glob
-import torch
+import tempfile
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 from typing import Optional, List
+
+try:
+    import torch
+    HAS_TORCH = True
+except ImportError:
+    torch = None
+    HAS_TORCH = False
 
 from models.classifier import determine_category_and_metadata
 from models.organizer import execute_organization, undo_run, list_history
@@ -20,8 +28,14 @@ from models.sandbox_generator import populate_sandbox, SANDBOX_DIR
 
 app = FastAPI(title="SlothSort API", description="Autonomous Local Desktop Organizer with Open-Source AI")
 
+IS_VERCEL = bool(os.environ.get("VERCEL"))
 STATIC_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "static"))
-STORAGE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "storage"))
+
+if IS_VERCEL:
+    STORAGE_DIR = os.path.join(tempfile.gettempdir(), "slothsort_storage")
+else:
+    STORAGE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "storage"))
+
 AUDIO_DIR = os.path.join(STORAGE_DIR, "audio_output")
 
 os.makedirs(STATIC_DIR, exist_ok=True)
@@ -39,19 +53,27 @@ class ProcessRequest(BaseModel):
 @app.get("/api/status")
 def get_system_status():
     """Returns local AI and hardware status."""
-    cuda_avail = torch.cuda.is_available()
-    device_name = torch.cuda.get_device_name(0) if cuda_avail else "CPU"
-    vram_gb = round(torch.cuda.get_device_properties(0).total_memory / (1024**3), 2) if cuda_avail else 0
+    cuda_avail = torch.cuda.is_available() if (HAS_TORCH and torch) else False
+    if cuda_avail:
+        device_name = torch.cuda.get_device_name(0)
+        vram_gb = round(torch.cuda.get_device_properties(0).total_memory / (1024**3), 2)
+    elif IS_VERCEL:
+        device_name = "Vercel Serverless (Cloud Showcase)"
+        vram_gb = 0
+    else:
+        device_name = "Local CPU Inference"
+        vram_gb = 0
     
     return {
-        "status": "online_locally",
-        "offline_ready": True,
+        "status": "online",
+        "platform": "Vercel Serverless" if IS_VERCEL else "Local Native",
+        "offline_ready": not IS_VERCEL,
         "cuda_available": cuda_avail,
         "device": device_name,
         "vram_gb": vram_gb,
-        "llm_model": "HuggingFaceTB/SmolLM2-360M-Instruct",
-        "whisper_model": "openai-whisper/base (CUDA accelerated)",
-        "tts_engine": "pyttsx3 Offline Voice Synthesizer",
+        "llm_model": "HuggingFaceTB/SmolLM2-360M-Instruct" if HAS_TORCH else "SmolLM2-360M (Cloud Simulation Mode)",
+        "whisper_model": "openai-whisper/base (CUDA accelerated)" if HAS_TORCH else "Whisper base (Cloud Simulation Mode)",
+        "tts_engine": "pyttsx3 / Web Speech API",
         "cloud_api_cost": "$0.00 / ∞",
         "data_leakage_risk": "0.0% (Zero packets sent to external servers)"
     }
@@ -73,14 +95,12 @@ def api_scan_directory(req: ScanRequest):
     """Scans target directory and previews files without moving them."""
     target_dir = req.directory or SANDBOX_DIR
     if not os.path.exists(target_dir):
-        # Auto-create sandbox if requested path doesn't exist
         if target_dir == SANDBOX_DIR:
             populate_sandbox()
         else:
             raise HTTPException(status_code=404, detail="Target directory does not exist.")
             
     files = []
-    # Read files in directory (shallow scan)
     for entry in os.scandir(target_dir):
         if entry.is_file() and not entry.name.startswith("."):
             _, ext = os.path.splitext(entry.name)
@@ -125,7 +145,6 @@ def api_process_directory(req: ProcessRequest):
     voice_memo_count = 0
     
     for fpath in file_entries:
-        # Avoid processing system or manifest files
         if os.path.basename(fpath).startswith("."):
             continue
             
@@ -134,13 +153,9 @@ def api_process_directory(req: ProcessRequest):
             voice_memo_count += 1
         analysis_results.append(res)
         
-    # Execute file organization & create transcripts
     org_result = execute_organization(target_dir, analysis_results)
-    
-    # Generate Morning Digest
     digest = generate_morning_digest_text(analysis_results, len(analysis_results), voice_memo_count)
     
-    # Generate Audio briefing via local TTS
     audio_file_url = None
     if req.enable_tts:
         speech_text = f"{digest['greeting']}. {digest['briefing']}"
@@ -173,10 +188,9 @@ def api_history():
 
 @app.get("/api/audio/{filename}")
 def api_get_audio(filename: str):
-    """Streams generated offline TTS audio files or sandbox audio."""
+    """Streams generated audio files or sandbox audio."""
     path = os.path.join(AUDIO_DIR, filename)
     if not os.path.exists(path):
-        # Also check sandbox audio
         path = os.path.join(SANDBOX_DIR, filename)
         if not os.path.exists(path):
             raise HTTPException(status_code=404, detail="Audio file not found")
@@ -216,11 +230,12 @@ def api_open_innovation_stats():
     }
 
 # Mount static frontend
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+if os.path.exists(STATIC_DIR):
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 @app.get("/")
 def serve_index():
     index_file = os.path.join(STATIC_DIR, "index.html")
     if os.path.exists(index_file):
         return FileResponse(index_file)
-    return {"message": "SlothSort API is live. Static frontend index.html pending."}
+    return {"message": "SlothSort API is live."}
