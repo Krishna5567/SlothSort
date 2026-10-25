@@ -51,6 +51,7 @@ class ProcessRequest(BaseModel):
     sloth_mode: bool = False
 
 @app.get("/api/status")
+@app.get("/status")
 def get_system_status():
     """Returns local AI and hardware status."""
     cuda_avail = torch.cuda.is_available() if (HAS_TORCH and torch) else False
@@ -79,6 +80,7 @@ def get_system_status():
     }
 
 @app.post("/api/sandbox/populate")
+@app.post("/sandbox/populate")
 def api_populate_sandbox():
     """Populates or resets the sandbox test folder with sample messy files."""
     sandbox_path = populate_sandbox()
@@ -91,6 +93,7 @@ def api_populate_sandbox():
     }
 
 @app.post("/api/scan")
+@app.post("/scan")
 def api_scan_directory(req: ScanRequest):
     """Scans target directory and previews files without moving them."""
     target_dir = req.directory or SANDBOX_DIR
@@ -118,6 +121,7 @@ def api_scan_directory(req: ScanRequest):
     }
 
 @app.post("/api/process")
+@app.post("/process")
 def api_process_directory(req: ProcessRequest):
     """
     Core 'Hibernate & Sort' endpoint.
@@ -176,17 +180,20 @@ def api_process_directory(req: ProcessRequest):
     }
 
 @app.post("/api/undo")
+@app.post("/undo")
 def api_undo(run_id: Optional[str] = None):
     """Rolls back an organizing operation."""
     res = undo_run(run_id)
     return res
 
 @app.get("/api/history")
+@app.get("/history")
 def api_history():
     """Returns past organization runs."""
     return list_history()
 
 @app.get("/api/audio/{filename}")
+@app.get("/audio/{filename}")
 def api_get_audio(filename: str):
     """Streams generated audio files or sandbox audio."""
     path = os.path.join(AUDIO_DIR, filename)
@@ -197,6 +204,7 @@ def api_get_audio(filename: str):
     return FileResponse(path, media_type="audio/wav")
 
 @app.get("/api/open-innovation-stats")
+@app.get("/open-innovation-stats")
 def api_open_innovation_stats():
     """Returns comparative metrics highlighting the advantages of open-weight local AI."""
     return {
